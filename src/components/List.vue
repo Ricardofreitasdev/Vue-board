@@ -14,24 +14,33 @@
         draggable="true"
         @dragstart="startDrag($event, card)"
       />
-      <button @click="handleClick">Adicionar um novo cartão</button>
-      <div v-if="newCard">
+      <button v-if="!newCard" @click="handleClick" class="list__button">
+        <span>
+          <i class="fa-solid fa-plus"></i>
+        </span>
+        <p>Adicionar nova tarefa</p>
+      </button>
+      <div v-if="newCard" class="list__textarea">
         <input type="text" placeholder="novo card" v-model="newCardValue" />
-        <button @click="createCard">enviar</button>
+        <div class="list__actions">
+          <button @click="createCard">enviar</button>
+          <button @click="handleClick">cancelar</button>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { uuid } from "vue-uuid";
 import { mapState, mapActions } from "vuex";
 import Card from "@/components/Card.vue";
+import utilsMixin from "@/mixins/utils";
 import store from "@/store";
 
 export default {
   name: "ListComponent",
   props: ["title", "listID"],
+  mixins: [utilsMixin],
   components: {
     Card,
   },
@@ -39,7 +48,6 @@ export default {
     return {
       newCard: false,
       newCardValue: "",
-      id: uuid.v1(),
     };
   },
   methods: {
@@ -51,7 +59,7 @@ export default {
 
     createCard() {
       store.dispatch("CREATE_CARD", {
-        id: this.id,
+        id: this.generateId(),
         title: this.newCardValue,
         listID: this.listID,
       });
@@ -83,7 +91,6 @@ export default {
     ...mapState(["cards"]),
 
     cardList() {
-      console.log("here");
       return this.cards.filter((card) => card.listID === this.listID);
     },
   },
@@ -91,14 +98,54 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import "@/assets/styles/variables.scss";
+
 .list {
-  width: 200px;
+  min-width: 270px;
   min-height: 250px;
-  background: rgb(223, 221, 221);
-  padding: 8px;
+  background: $bg-background;
+  padding: 16px;
   display: flex;
   justify-content: flex-start;
   margin: 0px 5px;
   flex-direction: column;
+  border-radius: 4px;
+
+  &__title {
+    text-align: left;
+    margin-bottom: 8px;
+  }
+
+  &__button {
+    display: flex;
+    align-items: center;
+    background: none;
+    width: 100%;
+    background-color: transparent;
+    border: none;
+    padding: 5px;
+    transition: $transition;
+    border-radius: 4px;
+    cursor: pointer;
+
+    span {
+      margin-right: 10px;
+    }
+
+    &:hover {
+      background-color: #dadadb;
+    }
+  }
+
+  &__textarea {
+    input {
+      padding: 5px;
+      width: 100%;
+      background: #fff;
+      border-radius: 4px;
+      margin-bottom: 10px;
+      text-align: left;
+    }
+  }
 }
 </style>

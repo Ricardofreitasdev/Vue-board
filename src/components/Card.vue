@@ -21,6 +21,7 @@ export default {
   border-radius: 4px;
   margin: 10px 0;
   text-align: left;
+  cursor: move;
 
   &__title {
     font-size: 12px;

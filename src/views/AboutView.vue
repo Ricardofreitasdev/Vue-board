@@ -18,24 +18,24 @@
 <script>
 import { mapState, mapActions } from "vuex";
 import List from "@/components/List.vue";
-import { uuid } from "vue-uuid";
+import utilsMixin from "@/mixins/utils";
 import store from "@/store";
 
 export default {
   components: {
     List,
   },
+  mixins: [utilsMixin],
   data() {
     return {
       newTitle: "",
-      id: uuid.v1(),
     };
   },
   methods: {
     ...mapActions["CREATE_LIST"],
     createList() {
       store.dispatch("CREATE_LIST", {
-        id: this.id,
+        id: this.generateId(),
         title: this.newTitle,
       });
 
@@ -51,6 +51,7 @@ export default {
 <style lang="scss" scoped>
 .about {
   padding: 32px;
+  overflow-y: scroll;
 
   &__new {
     display: flex;
