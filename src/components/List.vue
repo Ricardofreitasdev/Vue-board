@@ -13,19 +13,28 @@
         :title="card.title"
         draggable="true"
         @dragstart="startDrag($event, card)"
+        @click="cardClick(card)"
       />
-      <button v-if="!newCard" @click="handleClick" class="list__button">
-        <span>
-          <i class="fa-solid fa-plus"></i>
-        </span>
-        <p>Adicionar nova tarefa</p>
-      </button>
+      <button-new
+        :show="!newCard"
+        @onClickButton="handleClick"
+        text="Adicionar nova tarefa"
+      />
       <div v-if="newCard" class="list__textarea">
         <input type="text" placeholder="novo card" v-model="newCardValue" />
         <div class="list__actions">
           <button @click="createCard">enviar</button>
           <button @click="handleClick">cancelar</button>
         </div>
+        <div v-if="hasError" class="list__error">
+          <span>{{ error }}</span>
+        </div>
+      </div>
+
+      <div class="modal" v-if="showModal">
+        <button @click="cardClick">fechar</button>
+        <span>titulo</span>
+        <input type="text" :value="modalCard.title" />
       </div>
     </div>
   </div>
@@ -36,6 +45,7 @@ import { mapState, mapActions } from "vuex";
 import Card from "@/components/Card.vue";
 import utilsMixin from "@/mixins/utils";
 import store from "@/store";
+import ButtonNew from "./ButtonNew.vue";
 
 export default {
   name: "ListComponent",
@@ -43,11 +53,15 @@ export default {
   mixins: [utilsMixin],
   components: {
     Card,
+    ButtonNew,
   },
   data() {
     return {
       newCard: false,
+      showModal: false,
       newCardValue: "",
+      error: "",
+      modalCard: null,
     };
   },
   methods: {
@@ -58,6 +72,14 @@ export default {
     },
 
     createCard() {
+      if (this.isEmpty) {
+        return (this.error = "O card não pode ficar vazio");
+      }
+
+      if (this.isShorty) {
+        return (this.error = "O titulo é muito curto");
+      }
+
       store.dispatch("CREATE_CARD", {
         id: this.generateId(),
         title: this.newCardValue,
@@ -86,12 +108,27 @@ export default {
       };
       store.dispatch("CHANGE_CARD", data);
     },
+
+    cardClick(card) {
+      this.showModal = !this.showModal;
+      this.modalCard = card;
+    },
   },
   computed: {
     ...mapState(["cards"]),
 
     cardList() {
       return this.cards.filter((card) => card.listID === this.listID);
+    },
+    isEmpty() {
+      return this.newCardValue === "" ? true : false;
+    },
+    isShorty() {
+      const minLength = 5;
+      return this.newCardValue.length < minLength ? true : false;
+    },
+    hasError() {
+      return this.error.length >= 1;
     },
   },
 };
@@ -111,30 +148,31 @@ export default {
   flex-direction: column;
   border-radius: 4px;
 
+  .modal {
+    position: absolute;
+    width: 400px;
+    height: 400px;
+    left: calc(50% - 200px);
+    top: calc(50% - 200px);
+    padding: 25px;
+    background: rgb(252, 252, 252);
+    border-radius: 16px;
+
+    @media (max-width: 800px) {
+      width: 80%;
+      height: 80%;
+      left: 5%;
+      top: 5%;
+    }
+  }
+
+  &:first-child {
+    margin-left: 0px;
+  }
+
   &__title {
     text-align: left;
     margin-bottom: 8px;
-  }
-
-  &__button {
-    display: flex;
-    align-items: center;
-    background: none;
-    width: 100%;
-    background-color: transparent;
-    border: none;
-    padding: 5px;
-    transition: $transition;
-    border-radius: 4px;
-    cursor: pointer;
-
-    span {
-      margin-right: 10px;
-    }
-
-    &:hover {
-      background-color: #dadadb;
-    }
   }
 
   &__textarea {

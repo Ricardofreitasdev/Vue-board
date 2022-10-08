@@ -19,9 +19,9 @@ export default {
   width: 100%;
   background: #fff;
   border-radius: 4px;
-  margin: 10px 0;
+  margin-bottom: 10px;
   text-align: left;
-  cursor: move;
+  cursor: pointer;
 
   &__title {
     font-size: 12px;

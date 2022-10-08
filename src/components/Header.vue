@@ -17,7 +17,11 @@ export default {
 @import "@/assets/styles/variables.scss";
 
 header {
+  height: 10vh;
   width: 100%;
   background-color: $bg-color;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 </style>
