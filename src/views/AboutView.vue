@@ -30,15 +30,14 @@
 import { mapState, mapActions } from "vuex";
 import List from "@/components/List.vue";
 import ButtonNew from "@/components/ButtonNew.vue";
-import utilsMixin from "@/mixins/utils";
 import store from "@/store";
+import ModelList from "@/models/list";
 
 export default {
   components: {
     List,
     ButtonNew,
   },
-  mixins: [utilsMixin],
   data() {
     return {
       newTitle: "",
@@ -57,10 +56,8 @@ export default {
         return (this.error = "O titulo é muito curto");
       }
 
-      store.dispatch("CREATE_LIST", {
-        id: this.generateId(),
-        title: this.newTitle,
-      });
+      const list = new ModelList(this.newTitle);
+      store.dispatch("CREATE_LIST", list);
 
       this.newTitle = "";
       this.error = "";

@@ -2,16 +2,7 @@ import { createStore } from "vuex";
 
 export default createStore({
   state: {
-    lists: [
-      {
-        id: 1,
-        title: "A fazer",
-      },
-      {
-        id: 2,
-        title: "Fazendo",
-      },
-    ],
+    lists: [],
     cards: [],
   },
   mutations: {
@@ -26,6 +17,9 @@ export default createStore({
       item.listID = listID;
       state.cards[state.cards.indexOf(item)] = item;
     },
+    ["ADDITIONAL_INFOS_CARD"](state, card) {
+      state.cards[state.cards.indexOf(card.id)] = card;
+    },
   },
   actions: {
     ["CREATE_LIST"]({ commit }, payload) {
@@ -36,6 +30,12 @@ export default createStore({
     },
     ["CHANGE_CARD"]({ commit }, payload) {
       commit("CHANGE_CARD", payload);
+    },
+    ["ADDITIONAL_INFOS_CARD"]({ commit }, payload) {
+      commit("ADDITIONAL_INFOS_CARD", payload);
+    },
+    ["UPDATE_STATUS_TASK"]({ commit }, payload) {
+      commit("UPDATE_STATUS_TASK", payload);
     },
   },
 });

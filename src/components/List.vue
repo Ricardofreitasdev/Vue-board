@@ -31,11 +31,9 @@
         </div>
       </div>
 
-      <div class="modal" v-if="showModal">
-        <button @click="cardClick">fechar</button>
-        <span>titulo</span>
-        <input type="text" :value="modalCard.title" />
-      </div>
+      <Teleport to="body">
+        <Modal :isOpen="showModal" :card="modalCard" @onClickCard="cardClick" />
+      </Teleport>
     </div>
   </div>
 </template>
@@ -43,17 +41,18 @@
 <script>
 import { mapState, mapActions } from "vuex";
 import Card from "@/components/Card.vue";
-import utilsMixin from "@/mixins/utils";
 import store from "@/store";
 import ButtonNew from "./ButtonNew.vue";
+import Modal from "./Modal.vue";
+import ModelCard from "@/models/card";
 
 export default {
   name: "ListComponent",
   props: ["title", "listID"],
-  mixins: [utilsMixin],
   components: {
     Card,
     ButtonNew,
+    Modal,
   },
   data() {
     return {
@@ -61,7 +60,7 @@ export default {
       showModal: false,
       newCardValue: "",
       error: "",
-      modalCard: null,
+      modalCard: ModelCard,
     };
   },
   methods: {
@@ -80,11 +79,8 @@ export default {
         return (this.error = "O titulo é muito curto");
       }
 
-      store.dispatch("CREATE_CARD", {
-        id: this.generateId(),
-        title: this.newCardValue,
-        listID: this.listID,
-      });
+      const card = new ModelCard(this.listID, this.newCardValue);
+      store.dispatch("CREATE_CARD", card);
 
       this.restoureInitialState();
     },
@@ -147,24 +143,6 @@ export default {
   margin: 0px 5px;
   flex-direction: column;
   border-radius: 4px;
-
-  .modal {
-    position: absolute;
-    width: 400px;
-    height: 400px;
-    left: calc(50% - 200px);
-    top: calc(50% - 200px);
-    padding: 25px;
-    background: rgb(252, 252, 252);
-    border-radius: 16px;
-
-    @media (max-width: 800px) {
-      width: 80%;
-      height: 80%;
-      left: 5%;
-      top: 5%;
-    }
-  }
 
   &:first-child {
     margin-left: 0px;
