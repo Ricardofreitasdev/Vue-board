@@ -1,4 +1,4 @@
-import utils from "@/functions/utils";
+import utils from "@/models/utils";
 
 export default class ModelCard {
   task = [];
@@ -41,5 +41,13 @@ export default class ModelCard {
   updateTask(event, taskId) {
     const task = this.task.find((task) => task.id == taskId);
     task.done = event.target.checked;
+  }
+
+  taskLength() {
+    return this.task.length;
+  }
+
+  tasksDone() {
+    return this.task.filter((item) => item.done === true).length;
   }
 }

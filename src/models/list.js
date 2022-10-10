@@ -1,4 +1,4 @@
-import utils from "@/functions/utils";
+import utils from "@/models/utils";
 
 export default class ModelList {
   /**

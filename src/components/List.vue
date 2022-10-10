@@ -10,7 +10,7 @@
       <Card
         v-for="card in cardList"
         :key="card.id"
-        :title="card.title"
+        :card="card"
         draggable="true"
         @dragstart="startDrag($event, card)"
         @click="cardClick(card)"
