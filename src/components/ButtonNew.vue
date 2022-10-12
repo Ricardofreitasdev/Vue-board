@@ -34,13 +34,14 @@ export default {
   transition: $transition;
   border-radius: 4px;
   cursor: pointer;
+  color: $color-primary;
 
   span {
     margin-right: 10px;
   }
 
   &:hover {
-    background-color: #dadadb;
+    background-color: $bg-light;
   }
 }
 </style>

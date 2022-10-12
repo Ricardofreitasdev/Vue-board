@@ -20,16 +20,15 @@
         @onClickButton="handleClick"
         text="Adicionar nova tarefa"
       />
-      <div v-if="newCard" class="list__textarea">
-        <input type="text" placeholder="novo card" v-model="newCardValue" />
-        <div class="list__actions">
-          <button @click="createCard">enviar</button>
-          <button @click="handleClick">cancelar</button>
-        </div>
-        <div v-if="hasError" class="list__error">
-          <span>{{ error }}</span>
-        </div>
-      </div>
+      <CreateForm
+        placeholder="novo cartão"
+        :show="newCard"
+        :hasError="hasError"
+        :error="error"
+        @valueInput="textInput"
+        @onClickCreate="createCard"
+        @onClickCancel="handleClick"
+      />
 
       <Teleport to="body">
         <Modal :isOpen="showModal" :card="modalCard" @onClickCard="cardClick" />
@@ -45,6 +44,7 @@ import store from "@/store";
 import ButtonNew from "./ButtonNew.vue";
 import Modal from "./Modal.vue";
 import ModelCard from "@/models/card";
+import CreateForm from "./createForm.vue";
 
 export default {
   name: "ListComponent",
@@ -53,6 +53,7 @@ export default {
     Card,
     ButtonNew,
     Modal,
+    CreateForm,
   },
   data() {
     return {
@@ -68,6 +69,10 @@ export default {
 
     handleClick() {
       this.newCard = !this.newCard;
+    },
+
+    textInput(value) {
+      this.newCardValue = value;
     },
 
     createCard() {
@@ -94,6 +99,7 @@ export default {
       event.dataTransfer.dropEffect = "move";
       event.dataTransfer.effectAllowed = "move";
       event.dataTransfer.setData("itemID", item.id);
+      console.log(event);
     },
 
     onDrop(event, listID) {
@@ -120,7 +126,7 @@ export default {
       return this.newCardValue === "" ? true : false;
     },
     isShorty() {
-      const minLength = 5;
+      const minLength = 3;
       return this.newCardValue.length < minLength ? true : false;
     },
     hasError() {
@@ -135,14 +141,23 @@ export default {
 
 .list {
   min-width: 270px;
-  min-height: 250px;
-  background: $bg-background;
+  background: $bg-secondary;
   padding: 16px;
   display: flex;
   justify-content: flex-start;
   margin: 0px 5px;
   flex-direction: column;
   border-radius: 4px;
+  border: 2px solid transparent;
+  transition: $transition;
+
+  &:hover {
+    border: 2px solid $bg-light;
+  }
+
+  @media (max-width: $v2) {
+    min-width: 95%;
+  }
 
   &:first-child {
     margin-left: 0px;
@@ -151,6 +166,9 @@ export default {
   &__title {
     text-align: left;
     margin-bottom: 8px;
+    color: $color-secondary;
+    font-weight: bold;
+    text-transform: uppercase;
   }
 
   &__textarea {

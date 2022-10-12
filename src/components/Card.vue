@@ -19,17 +19,27 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import "@/assets/styles/variables.scss";
+
 .card {
-  padding: 5px;
+  padding: 10px;
   width: 100%;
-  background: #fff;
+  background: $bg-light;
   border-radius: 4px;
   margin-bottom: 10px;
   text-align: left;
   cursor: pointer;
+  border: 2px solid transparent;
+  transition: $transition;
+
+  &:hover {
+    border: 2px solid $bg-light;
+  }
 
   &__title {
     font-size: 12px;
+    margin-bottom: 5px;
+    display: flex;
   }
 
   &__status {

@@ -18,7 +18,7 @@ export default {
     getStyle() {
       return {
         height: "100%",
-        background: this.progressPercentage === 100 ? "#00e700" : "#2196f3",
+        background: this.progressPercentage === 100 ? "#42b883" : "#2196f3",
         width: this.progressPercentage + "%",
         position: "absolute",
         transitionDuration: "0.14s",
@@ -40,6 +40,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import "@/assets/styles/variables.scss";
+
 .progress {
   display: flex;
   align-items: center;

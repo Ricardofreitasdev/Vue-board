@@ -1,7 +1,7 @@
 <template>
   <div v-if="isOpen">
     <div class="modal">
-      <button @click="$emit('onClickCard')">
+      <button class="modal__close" @click="$emit('onClickCard')">
         <i class="fa-solid fa-close"></i>
       </button>
 
@@ -113,6 +113,8 @@ export default {
 </script>
 
 <style lang="scss">
+@import "@/assets/styles/variables.scss";
+
 .modal {
   position: absolute;
   width: 400px;
@@ -120,9 +122,30 @@ export default {
   left: calc(50% - 200px);
   top: calc(50% - 200px);
   padding: 25px;
-  background: rgb(207, 205, 205);
+  background: $bg-secondary;
   border-radius: 16px;
   z-index: 1;
+
+  &__close {
+    position: absolute;
+    right: 15px;
+    top: 15px;
+    border: none;
+    background: none;
+    padding: 10px;
+    width: 25px;
+    height: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    cursor: pointer;
+    background: $bg-light;
+
+    i {
+      height: 11px;
+    }
+  }
 
   &-bg {
     background: black;
@@ -133,7 +156,7 @@ export default {
     opacity: 0.5;
   }
 
-  @media (max-width: 800px) {
+  @media (max-width: $v2) {
     width: 90%;
     height: 90%;
     left: 5%;

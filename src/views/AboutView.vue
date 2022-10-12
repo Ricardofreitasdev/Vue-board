@@ -13,14 +13,15 @@
           @onClickButton="handleClick"
           text="Nova lista"
         />
-        <div v-if="newList">
-          <input type="text" v-model="newTitle" placeholder="nova lista" />
-          <button @click="createList">enviar</button>
-          <button @click="handleClick">cancelar</button>
-          <div v-if="hasError" class="list__error">
-            <span>{{ error }}</span>
-          </div>
-        </div>
+        <CreateForm
+          placeholder="nova lista"
+          :show="newList"
+          :hasError="hasError"
+          :error="error"
+          @valueInput="textInput"
+          @onClickCreate="createList"
+          @onClickCancel="handleClick"
+        />
       </div>
     </div>
   </div>
@@ -32,11 +33,13 @@ import List from "@/components/List.vue";
 import ButtonNew from "@/components/ButtonNew.vue";
 import store from "@/store";
 import ModelList from "@/models/list";
+import CreateForm from "@/components/createForm.vue";
 
 export default {
   components: {
     List,
     ButtonNew,
+    CreateForm,
   },
   data() {
     return {
@@ -59,11 +62,14 @@ export default {
       const list = new ModelList(this.newTitle);
       store.dispatch("CREATE_LIST", list);
 
-      this.newTitle = "";
+      this.newList = !this.newList;
       this.error = "";
     },
     handleClick() {
       this.newList = !this.newList;
+    },
+    textInput(value) {
+      this.newTitle = value;
     },
   },
   computed: {
@@ -83,16 +89,32 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import "@/assets/styles/variables.scss";
+
 .about {
   padding: 16px;
   height: 100%;
   overflow-y: scroll;
 
+  &::-webkit-scrollbar {
+    width: 2px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: $bg-primary; /* color of the tracking area */
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: $bg-secondary; /* color of the scroll thumb */
+    border-radius: 8px; /* roundness of the scroll thumb */
+    border: 1px solid $bg-light; /* creates padding around scroll thumb */
+  }
+
   &__new {
     display: flex;
     flex-direction: column;
-    background: #dadadb;
-    height: 75px;
+    background: $bg-secondary;
+    min-height: 75px;
     min-width: 270px;
     padding: 8px;
     border-radius: 4px;
