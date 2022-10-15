@@ -55,10 +55,6 @@ export default {
         return (this.error = "A lista não pode ficar vazia");
       }
 
-      if (this.isShorty) {
-        return (this.error = "O titulo é muito curto");
-      }
-
       const list = new ModelList(this.newTitle);
       store.dispatch("CREATE_LIST", list);
 
@@ -76,10 +72,6 @@ export default {
     ...mapState(["lists"]),
     isEmpty() {
       return this.newTitle === "" ? true : false;
-    },
-    isShorty() {
-      const minLength = 5;
-      return this.newTitle.length < minLength ? true : false;
     },
     hasError() {
       return this.error.length >= 1;

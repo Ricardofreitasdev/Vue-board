@@ -1,9 +1,32 @@
 import { createStore } from "vuex";
 
+function updateCardStorage(data) {
+  localStorage.setItem("card", JSON.stringify(data));
+  return;
+}
+
+function getCardStorage() {
+  const data = localStorage.getItem("card");
+  return JSON.parse(data);
+}
+
 export default createStore({
   state: {
-    lists: [],
-    cards: [],
+    lists: [
+      {
+        id: 1,
+        title: "A FAZER",
+      },
+      {
+        id: 2,
+        title: "FAZENDO",
+      },
+      {
+        id: 3,
+        title: "CONCLUÍDO",
+      },
+    ],
+    cards: getCardStorage() ?? [],
   },
   mutations: {
     ["UPDATE_LIST"](state, payload) {
@@ -11,14 +34,18 @@ export default createStore({
     },
     ["UPDATE_CARD"](state, payload) {
       state.cards.push(payload);
+      updateCardStorage(state.cards);
     },
     ["CHANGE_CARD"](state, { itemID, listID }) {
       const item = state.cards.find((card) => card.id === itemID);
       item.listID = listID;
       state.cards[state.cards.indexOf(item)] = item;
+      updateCardStorage(state.cards);
     },
     ["ADDITIONAL_INFOS_CARD"](state, card) {
-      state.cards[state.cards.indexOf(card.id)] = card;
+      const index = state.cards.findIndex((item) => item.id == card.id);
+      state.cards[index] = card;
+      updateCardStorage(state.cards);
     },
   },
   actions: {
@@ -33,9 +60,6 @@ export default createStore({
     },
     ["ADDITIONAL_INFOS_CARD"]({ commit }, payload) {
       commit("ADDITIONAL_INFOS_CARD", payload);
-    },
-    ["UPDATE_STATUS_TASK"]({ commit }, payload) {
-      commit("UPDATE_STATUS_TASK", payload);
     },
   },
 });

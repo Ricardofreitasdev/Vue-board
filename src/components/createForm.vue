@@ -1,6 +1,7 @@
 <template>
   <div v-if="show" class="createForm__wrapper">
     <input
+      autofocus="true"
       type="text"
       :placeholder="placeholder"
       v-model="text"
@@ -34,6 +35,7 @@ export default {
   methods: {
     onInput(event) {
       this.$emit("valueInput", event.target.value);
+      this.text = "";
     },
     click() {
       this.$emit("onClickCreate");
@@ -91,6 +93,8 @@ export default {
       background: $bg-light;
       border-radius: 4px;
       color: $color-primary;
+      transition: $transition;
+      border: 1px solid transparent;
 
       &:focus,
       &:hover {

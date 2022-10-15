@@ -3,15 +3,18 @@ import utils from "@/models/utils";
 export default class ModelCard {
   task = [];
   /**
-   *  Model do card
-   * @param {String} listID
-   * @param {String} title
-   * @param {String} description
+   * @param {number} listID
+   * @param {string} title
+   * @param {arr} task
+   * @param {string} id
+   * @param {string} description
    */
-  constructor(listID, title) {
-    this.id = utils.generateId();
+  constructor(listID, title, task = [], id = null, description = "") {
     this.listID = listID;
+    this.task = task;
+    this.id = id ? id : utils.generateId();
     this.title = title;
+    this.description = description;
   }
 
   /**
@@ -28,6 +31,10 @@ export default class ModelCard {
    */
   setDescription(description) {
     this.description = description;
+  }
+
+  updateTitle(title) {
+    this.title = title;
   }
 
   /**

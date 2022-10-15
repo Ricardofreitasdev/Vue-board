@@ -1,20 +1,35 @@
 <template>
   <div class="card">
     <span class="card__title">
-      {{ card.title }}
+      {{ modelCard.title }}
     </span>
     <div class="card__status">
-      <ProgressBar :total="card.taskLength()" :done="card.tasksDone()" />
+      <ProgressBar
+        :total="modelCard.taskLength()"
+        :done="modelCard.tasksDone()"
+      />
     </div>
   </div>
 </template>
 
 <script>
+import ModelCard from "@/models/card";
 import ProgressBar from "./ProgressBar.vue";
 export default {
   name: "CardComponent",
   props: ["card"],
   components: { ProgressBar },
+  computed: {
+    modelCard() {
+      return new ModelCard(
+        this.card.listID,
+        this.card.title,
+        this.card.task,
+        this.card.id,
+        this.card.description
+      );
+    },
+  },
 };
 </script>
 
@@ -29,11 +44,12 @@ export default {
   margin-bottom: 10px;
   text-align: left;
   cursor: pointer;
-  border: 2px solid transparent;
+  border: 1px solid transparent;
   transition: $transition;
 
-  &:hover {
-    border: 2px solid $bg-light;
+  &:hover,
+  &:focus {
+    border: 1px solid $color-secondary;
   }
 
   &__title {

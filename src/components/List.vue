@@ -61,7 +61,7 @@ export default {
       showModal: false,
       newCardValue: "",
       error: "",
-      modalCard: ModelCard,
+      modalCard: null,
     };
   },
   methods: {
@@ -80,10 +80,6 @@ export default {
         return (this.error = "O card não pode ficar vazio");
       }
 
-      if (this.isShorty) {
-        return (this.error = "O titulo é muito curto");
-      }
-
       const card = new ModelCard(this.listID, this.newCardValue);
       store.dispatch("CREATE_CARD", card);
 
@@ -99,7 +95,6 @@ export default {
       event.dataTransfer.dropEffect = "move";
       event.dataTransfer.effectAllowed = "move";
       event.dataTransfer.setData("itemID", item.id);
-      console.log(event);
     },
 
     onDrop(event, listID) {
@@ -124,10 +119,6 @@ export default {
     },
     isEmpty() {
       return this.newCardValue === "" ? true : false;
-    },
-    isShorty() {
-      const minLength = 3;
-      return this.newCardValue.length < minLength ? true : false;
     },
     hasError() {
       return this.error.length >= 1;

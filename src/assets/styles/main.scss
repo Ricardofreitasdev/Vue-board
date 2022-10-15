@@ -13,7 +13,8 @@ body {
     color: $color-primary
 }
 
-input {
+input, textarea, select {
     border: none;
     outline: none;
+    background: none;
 }

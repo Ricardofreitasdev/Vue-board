@@ -5,8 +5,20 @@
         <i class="fa-solid fa-close"></i>
       </button>
 
-      <input type="text" :value="card.title" />
+      <input
+        class="input"
+        @change="updateTitle"
+        type="text"
+        :value="modelCard.title"
+      />
 
+      <div class="modal__description">
+        <textarea
+          :value="modelCard.description"
+          @change="createDescription"
+          placeholder="descrição"
+        ></textarea>
+      </div>
       <div v-if="lists.length > 1">
         <p>Mover para</p>
         <select v-model="selected">
@@ -14,7 +26,7 @@
             v-for="list in lists"
             :key="list.id"
             :value="list.title"
-            :disabled="list.id === card.listID"
+            :disabled="list.id === modelCard.listID"
             v-show="shouldShowSelect(list.id)"
           >
             {{ list.title }}
@@ -28,14 +40,14 @@
 
       <div class="tasks">
         <p>criar task</p>
-        <input type="text" v-model="task" />
+        <input class="input" type="text" v-model="task" />
         <button @click="createTask">criar</button>
         <div class="tasklist">
           <ProgressBar
-            :total="this.card.taskLength()"
-            :done="this.card.tasksDone()"
+            :total="this.modelCard.taskLength()"
+            :done="this.modelCard.tasksDone()"
           />
-          <div v-for="task in card.task" :key="task.id">
+          <div v-for="task in modelCard.task" :key="task.id">
             <input
               type="checkbox"
               :id="task.id"
@@ -48,7 +60,7 @@
         </div>
       </div>
     </div>
-    <div class="modal-bg"></div>
+    <div class="modal-bg" @click="$emit('onClickCard')"></div>
   </div>
 </template>
 
@@ -81,6 +93,15 @@ export default {
   emits: ["onClickCard"],
   computed: {
     ...mapState(["lists"]),
+    modelCard() {
+      return new ModelCard(
+        this.card.listID,
+        this.card.title,
+        this.card.task,
+        this.card.id,
+        this.card.description
+      );
+    },
   },
   methods: {
     ...mapActions["ADDITIONAL_INFOS_CARD"],
@@ -96,16 +117,26 @@ export default {
     },
     createTask() {
       const task = new ModelTask(this.task);
-      this.card.setTask(task);
-      store.dispatch("ADDITIONAL_INFOS_CARD", this.card);
+      this.modelCard.setTask(task);
+      store.dispatch("ADDITIONAL_INFOS_CARD", this.modelCard);
       this.task = "";
     },
+    createDescription(event) {
+      const description = event.target.value;
+      this.modelCard.setDescription(description);
+      store.dispatch("ADDITIONAL_INFOS_CARD", this.modelCard);
+    },
+    updateTitle(event) {
+      const title = event.target.value;
+      this.modelCard.updateTitle(title);
+      store.dispatch("ADDITIONAL_INFOS_CARD", this.modelCard);
+    },
     updateStatusTask(event, taskId) {
-      this.card.updateTask(event, taskId);
-      store.dispatch("ADDITIONAL_INFOS_CARD", this.card);
+      this.modelCard.updateTask(event, taskId);
+      store.dispatch("ADDITIONAL_INFOS_CARD", this.modelCard);
     },
     shouldShowSelect(id) {
-      return id !== this.card.listID;
+      return id !== this.modelCard.listID;
     },
   },
   components: { ProgressBar },
@@ -126,6 +157,28 @@ export default {
   border-radius: 16px;
   z-index: 1;
 
+  .input,
+  textarea,
+  select {
+    padding: 10px;
+    width: 100%;
+    border-radius: 4px;
+    margin: 10px 0;
+    text-align: left;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: ease-in-out 0.3s;
+    background: $bg-light;
+    border: 1px solid transparent;
+    transition: $transition;
+    color: $color-primary;
+
+    &:hover,
+    &:focus {
+      border: 1px solid $color-secondary;
+    }
+  }
+
   &__close {
     position: absolute;
     right: 15px;
@@ -141,6 +194,15 @@ export default {
     border-radius: 50%;
     cursor: pointer;
     background: $bg-light;
+    transition: $transition;
+    border: 1px solid transparent;
+    color: $color-primary;
+
+    &:hover,
+    &:focus {
+      border: 1px solid $color-secondary;
+      color: $color-secondary;
+    }
 
     i {
       height: 11px;
