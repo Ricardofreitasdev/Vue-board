@@ -19,7 +19,8 @@
           placeholder="descrição"
         ></textarea>
       </div>
-      <div v-if="lists.length > 1">
+
+      <div class="modal__list" v-if="lists.length > 1">
         <p>Mover para</p>
         <select v-model="selected">
           <option
@@ -38,24 +39,27 @@
         </div>
       </div>
 
-      <div class="tasks">
+      <div class="modal__tasks">
         <p>criar task</p>
         <input class="input" type="text" v-model="task" />
+        <span v-if="taskError">primeiro crie a sua</span>
         <button @click="createTask">criar</button>
-        <div class="tasklist">
+        <div class="modal__tasks-list">
           <ProgressBar
             :total="this.modelCard.taskLength()"
             :done="this.modelCard.tasksDone()"
           />
-          <div v-for="task in modelCard.task" :key="task.id">
-            <input
-              type="checkbox"
+          <div
+            class="modal__tasks-list--item"
+            v-for="task in modelCard.task"
+            :key="task.id"
+          >
+            <checkbox
               :id="task.id"
-              :value="task.title"
-              v-model="checkedList"
-              @change="updateStatusTask($event, task.id)"
+              :done="task.done"
+              @click="updateStatusTask(!task.done, task.id)"
+              :title="task.title"
             />
-            <label :for="task.id">{{ task.title }}</label>
           </div>
         </div>
       </div>
@@ -70,6 +74,7 @@ import { mapActions, mapState } from "vuex";
 import ModelCard from "@/models/card";
 import ModelTask from "@/models/task";
 import ProgressBar from "./ProgressBar.vue";
+import Checkbox from "./Checkbox.vue";
 
 export default {
   name: "Modal",
@@ -80,6 +85,7 @@ export default {
       tasks: [],
       task: "",
       checkedList: [],
+      taskError: false,
     };
   },
   props: {
@@ -115,7 +121,19 @@ export default {
       this.$emit("onClickCard");
       this.selected = "";
     },
+
+    fnTaskError() {
+      this.taskError = true;
+      setTimeout(() => {
+        this.taskError = false;
+      }, 3000);
+    },
     createTask() {
+      if (!this.task) {
+        this.fnTaskError();
+        return;
+      }
+
       const task = new ModelTask(this.task);
       this.modelCard.setTask(task);
       store.dispatch("ADDITIONAL_INFOS_CARD", this.modelCard);
@@ -131,15 +149,16 @@ export default {
       this.modelCard.updateTitle(title);
       store.dispatch("ADDITIONAL_INFOS_CARD", this.modelCard);
     },
-    updateStatusTask(event, taskId) {
-      this.modelCard.updateTask(event, taskId);
+    updateStatusTask(status, taskId) {
+      console.log(status);
+      this.modelCard.updateTask(status, taskId);
       store.dispatch("ADDITIONAL_INFOS_CARD", this.modelCard);
     },
     shouldShowSelect(id) {
       return id !== this.modelCard.listID;
     },
   },
-  components: { ProgressBar },
+  components: { ProgressBar, Checkbox },
 };
 </script>
 
@@ -156,6 +175,21 @@ export default {
   background: $bg-secondary;
   border-radius: 16px;
   z-index: 1;
+  overflow-y: scroll;
+
+  &::-webkit-scrollbar {
+    width: 2px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: $bg-primary; /* color of the tracking area */
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: $bg-secondary; /* color of the scroll thumb */
+    border-radius: 8px; /* roundness of the scroll thumb */
+    border: 1px solid $bg-light; /* creates padding around scroll thumb */
+  }
 
   .input,
   textarea,
@@ -216,6 +250,41 @@ export default {
     position: absolute;
     top: 0;
     opacity: 0.5;
+  }
+
+  &__tasks {
+    button {
+      padding: 8px 16px;
+      border-radius: 4px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      opacity: 0.9;
+      transition: ease-in-out 0.3s;
+      background: $color-secondary;
+      color: $color-primary;
+    }
+
+    &-list {
+      margin: 10px 0;
+
+      & .progress {
+        padding: 8px 0;
+      }
+
+      &--item {
+        margin: 10px 0;
+        display: flex;
+
+        input {
+          margin-right: 5px;
+        }
+
+        label {
+          font-size: 14px;
+          width: 100%;
+        }
+      }
+    }
   }
 
   @media (max-width: $v2) {

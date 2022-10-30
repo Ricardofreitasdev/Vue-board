@@ -45,9 +45,9 @@ export default class ModelCard {
     this.task.push(task);
   }
 
-  updateTask(event, taskId) {
+  updateTask(status, taskId) {
     const task = this.task.find((task) => task.id == taskId);
-    task.done = event.target.checked;
+    task.done = status;
   }
 
   taskLength() {
