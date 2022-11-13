@@ -1,13 +1,13 @@
 <template>
-  <div class="about">
-    <div class="about__container">
+  <div class="board">
+    <div class="board__container">
       <List
         v-for="list in lists"
         :key="list.id"
         :listID="list.id"
         :title="list.title"
       />
-      <div class="about__new">
+      <div class="board__new">
         <button-new
           :show="!newList"
           @onClickButton="handleClick"
@@ -83,7 +83,7 @@ export default {
 <style lang="scss" scoped>
 @import "@/assets/styles/variables.scss";
 
-.about {
+.board {
   padding: 16px;
   height: 100%;
   overflow-y: scroll;
