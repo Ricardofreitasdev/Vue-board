@@ -5,7 +5,13 @@
     @dragenter.prevent
     @dragover.prevent
   >
-    <div class="list__title">{{ title }}</div>
+    <div class="list__title">
+      <h4>{{ title }}</h4>
+      <div v-show="totalCardsInList">
+        <span><i class="fa-solid fa-list-ul"></i></span>
+        <span> {{ totalCardsInList }}</span>
+      </div>
+    </div>
     <div class="list__wrapper">
       <Card
         v-for="card in cardList"
@@ -25,7 +31,7 @@
         :show="newCard"
         :hasError="hasError"
         :error="error"
-        @valueInput="textInput"
+        @onValueInput="textInput"
         @onClickCreate="createCard"
         @onClickCancel="handleClick"
       />
@@ -115,7 +121,10 @@ export default {
     ...mapState(["cards"]),
 
     cardList() {
-      return this.cards.filter((card) => card.listID === this.listID);
+      return this.cards?.filter((card) => card.listID === this.listID);
+    },
+    totalCardsInList() {
+      return this.cardList.length;
     },
     isEmpty() {
       return this.newCardValue === "" ? true : false;
@@ -155,11 +164,25 @@ export default {
   }
 
   &__title {
-    text-align: left;
-    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     color: $color-secondary;
     font-weight: bold;
-    text-transform: uppercase;
+    margin-bottom: 15px;
+
+    h4 {
+      text-transform: uppercase;
+      font-size: 14px;
+    }
+
+    span {
+      font-size: 12px;
+    }
+
+    i {
+      margin-right: 5px;
+    }
   }
 
   &__textarea {

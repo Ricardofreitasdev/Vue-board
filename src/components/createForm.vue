@@ -31,10 +31,10 @@ export default {
       text: "",
     };
   },
-  emits: ["onClickCreate", "onClickCancel"],
+  emits: ["onClickCreate", "onClickCancel", "onValueInput"],
   methods: {
     onInput(event) {
-      this.$emit("valueInput", event.target.value);
+      this.$emit("onValueInput", event.target.value);
       this.text = "";
     },
     click() {

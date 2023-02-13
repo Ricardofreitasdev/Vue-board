@@ -18,7 +18,7 @@
           :show="newList"
           :hasError="hasError"
           :error="error"
-          @valueInput="textInput"
+          @onValueInput="textInput"
           @onClickCreate="createList"
           @onClickCancel="handleClick"
         />
