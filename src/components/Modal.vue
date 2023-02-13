@@ -90,7 +90,7 @@ export default {
   },
   props: {
     card: {
-      type: ModelCard,
+      type: Object,
     },
     isOpen: {
       type: Boolean,
@@ -150,7 +150,6 @@ export default {
       store.dispatch("ADDITIONAL_INFOS_CARD", this.modelCard);
     },
     updateStatusTask(status, taskId) {
-      console.log(status);
       this.modelCard.updateTask(status, taskId);
       store.dispatch("ADDITIONAL_INFOS_CARD", this.modelCard);
     },
@@ -167,10 +166,10 @@ export default {
 
 .modal {
   position: absolute;
-  width: 400px;
-  height: 400px;
-  left: calc(50% - 200px);
-  top: calc(50% - 200px);
+  width: 600px;
+  height: 600px;
+  left: calc(50% - 300px);
+  top: calc(50% - 300px);
   padding: 25px;
   background: $bg-secondary;
   border-radius: 16px;

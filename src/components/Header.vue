@@ -1,9 +1,6 @@
 <template>
   <header>
-    <!-- <nav>
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </nav> -->
+    <h1>Vue Board</h1>
   </header>
 </template>
 
@@ -23,5 +20,10 @@ header {
   display: flex;
   align-items: center;
   justify-content: center;
+
+  h1 {
+    color: $color-secondary;
+    font-size: 20px;
+  }
 }
 </style>

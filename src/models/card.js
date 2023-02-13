@@ -1,7 +1,6 @@
 import utils from "@/models/utils";
 
 export default class ModelCard {
-  task = [];
   /**
    * @param {number} listID
    * @param {string} title
