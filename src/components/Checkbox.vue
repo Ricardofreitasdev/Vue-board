@@ -5,7 +5,7 @@
         <i v-show="done" class="fa-solid fa-check"></i>
       </span>
     </div>
-    <p>{{ title }}</p>
+    <p :class="{ through: done }">{{ title }}</p>
   </div>
 </template>
 
@@ -33,11 +33,14 @@ export default {
   display: flex;
   width: 100%;
   cursor: pointer;
+  background: $bg-light;
+  align-items: center;
+  border-radius: 4px;
 
   .icon {
     width: 20px;
     height: 20px;
-    margin-right: 4px;
+    margin: 0 10px;
     border-radius: 4px;
     background: $bg-primary;
 
@@ -53,6 +56,9 @@ export default {
       background: $color-secondary;
       border-radius: 4px;
     }
+  }
+  .through {
+    text-decoration: line-through;
   }
 }
 </style>

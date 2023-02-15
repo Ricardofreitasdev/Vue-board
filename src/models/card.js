@@ -49,6 +49,11 @@ export default class ModelCard {
     task.done = status;
   }
 
+  deleteTask(taskId) {
+    const updatedTasks = this.task.filter((task) => task.id !== taskId);
+    this.task = updatedTasks;
+  }
+
   taskLength() {
     return this.task.length;
   }
