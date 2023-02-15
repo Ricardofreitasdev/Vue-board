@@ -4,7 +4,6 @@
       <button class="modal__close" @click="$emit('onClickCard')">
         <i class="fa-solid fa-close"></i>
       </button>
-
       <input
         class="input"
         @change="updateTitle"
@@ -20,7 +19,7 @@
         ></textarea>
       </div>
 
-      <div class="modal__list" v-if="lists.length > 1">
+      <div class="modal__list" v-if="lists.length > 1 && isMobile">
         <p>Mover para</p>
         <select v-model="selected">
           <option
@@ -44,7 +43,7 @@
         <input class="input" type="text" v-model="task" />
         <span v-if="taskError">primeiro crie a sua</span>
         <button @click="createTask">criar</button>
-        <div class="modal__tasks-list">
+        <div class="modal__tasks-list" v-show="this.modelCard.taskLength()">
           <ProgressBar
             :total="this.modelCard.taskLength()"
             :done="this.modelCard.tasksDone()"
@@ -75,9 +74,11 @@ import ModelCard from "@/models/card";
 import ModelTask from "@/models/task";
 import ProgressBar from "./ProgressBar.vue";
 import Checkbox from "./Checkbox.vue";
+import utils from "../mixins/utils";
 
 export default {
   name: "Modal",
+  mixins: [utils],
   data() {
     return {
       selected: "",
@@ -209,6 +210,14 @@ export default {
     &:hover,
     &:focus {
       border: 1px solid $color-secondary;
+    }
+  }
+
+  textarea {
+    min-height: 150px;
+
+    @media (max-width: $v2) {
+      min-height: 75px;
     }
   }
 

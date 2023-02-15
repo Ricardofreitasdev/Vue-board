@@ -3,12 +3,15 @@
     <span class="card__title">
       {{ modelCard.title }}
     </span>
-    <div class="card__status">
+    <div class="card__status" v-if="modelCard.taskLength()">
       <ProgressBar
         :total="modelCard.taskLength()"
         :done="modelCard.tasksDone()"
       />
     </div>
+    <small style="font-size: 10px" class="card__status" v-else
+      >cadastre uma task para exibir o progresso</small
+    >
   </div>
 </template>
 
