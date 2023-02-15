@@ -1,6 +1,8 @@
 <template>
   <div v-if="isOpen">
     <div class="modal">
+      <div class="modal__hash">#{{ modelCard.id }}</div>
+
       <button class="modal__close" @click="$emit('onClickCard')">
         <i class="fa-solid fa-close"></i>
       </button>
@@ -8,6 +10,7 @@
         class="input"
         @change="updateTitle"
         type="text"
+        placeholder="Titulo"
         :value="modelCard.title"
       />
 
@@ -15,7 +18,7 @@
         <textarea
           :value="modelCard.description"
           @change="createDescription"
-          placeholder="descrição"
+          placeholder="Descrição"
         ></textarea>
       </div>
 
@@ -40,26 +43,22 @@
 
       <div class="modal__tasks">
         <p>criar task</p>
-        <input class="input" type="text" v-model="task" />
-        <span v-if="taskError">primeiro crie a sua</span>
+        <input
+          class="input"
+          type="text"
+          placeholder="Digite aqui sua task..."
+          v-model="task"
+        />
+        <span class="modal__tasks--error" v-if="taskError"
+          >primeiro crie a sua task</span
+        >
         <button @click="createTask">criar</button>
         <div class="modal__tasks-list" v-show="this.modelCard.taskLength()">
           <ProgressBar
             :total="this.modelCard.taskLength()"
             :done="this.modelCard.tasksDone()"
           />
-          <div
-            class="modal__tasks-list--item"
-            v-for="task in modelCard.task"
-            :key="task.id"
-          >
-            <checkbox
-              :id="task.id"
-              :done="task.done"
-              @click="updateStatusTask(!task.done, task.id)"
-              :title="task.title"
-            />
-          </div>
+          <task-list :card="modelCard" />
         </div>
       </div>
     </div>
@@ -73,12 +72,14 @@ import { mapActions, mapState } from "vuex";
 import ModelCard from "@/models/card";
 import ModelTask from "@/models/task";
 import ProgressBar from "./ProgressBar.vue";
-import Checkbox from "./Checkbox.vue";
 import utils from "../mixins/utils";
+import TaskList from "./TaskList.vue";
 
 export default {
   name: "Modal",
+
   mixins: [utils],
+
   data() {
     return {
       selected: "",
@@ -89,6 +90,7 @@ export default {
       taskError: false,
     };
   },
+
   props: {
     card: {
       type: Object,
@@ -97,19 +99,27 @@ export default {
       type: Boolean,
     },
   },
+
+  components: { ProgressBar, TaskList },
+
   emits: ["onClickCard"],
+
   computed: {
-    ...mapState(["lists"]),
+    ...mapState(["lists", "cards"]),
     modelCard() {
       return new ModelCard(
-        this.card.listID,
-        this.card.title,
-        this.card.task,
-        this.card.id,
-        this.card.description
+        this.getCard?.listID,
+        this.getCard?.title,
+        this.getCard?.task,
+        this.getCard?.id,
+        this.getCard?.description
       );
     },
+    getCard() {
+      return this.cards?.filter((card) => card.id === this.card?.id)[0];
+    },
   },
+
   methods: {
     ...mapActions["ADDITIONAL_INFOS_CARD"],
     changeCard(card, title) {
@@ -129,6 +139,7 @@ export default {
         this.taskError = false;
       }, 3000);
     },
+
     createTask() {
       if (!this.task) {
         this.fnTaskError();
@@ -140,25 +151,28 @@ export default {
       store.dispatch("ADDITIONAL_INFOS_CARD", this.modelCard);
       this.task = "";
     },
+
     createDescription(event) {
       const description = event.target.value;
       this.modelCard.setDescription(description);
       store.dispatch("ADDITIONAL_INFOS_CARD", this.modelCard);
     },
+
     updateTitle(event) {
       const title = event.target.value;
       this.modelCard.updateTitle(title);
       store.dispatch("ADDITIONAL_INFOS_CARD", this.modelCard);
     },
+
     updateStatusTask(status, taskId) {
       this.modelCard.updateTask(status, taskId);
       store.dispatch("ADDITIONAL_INFOS_CARD", this.modelCard);
     },
+
     shouldShowSelect(id) {
       return id !== this.modelCard.listID;
     },
   },
-  components: { ProgressBar, Checkbox },
 };
 </script>
 
@@ -189,6 +203,11 @@ export default {
     background-color: $bg-secondary; /* color of the scroll thumb */
     border-radius: 8px; /* roundness of the scroll thumb */
     border: 1px solid $bg-light; /* creates padding around scroll thumb */
+  }
+
+  &__hash {
+    text-align: center;
+    margin-bottom: 10px;
   }
 
   .input,
@@ -270,6 +289,12 @@ export default {
       transition: ease-in-out 0.3s;
       background: $color-secondary;
       color: $color-primary;
+    }
+
+    &--error {
+      display: block;
+      margin-bottom: 10px;
+      color: $color-error;
     }
 
     &-list {

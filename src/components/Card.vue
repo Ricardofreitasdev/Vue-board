@@ -1,7 +1,10 @@
 <template>
   <div class="card">
     <span class="card__title">
-      {{ modelCard.title }}
+      <div>
+        {{ modelCard.title }}
+      </div>
+      <div>#{{ modelCard.id }}</div>
     </span>
     <div class="card__status" v-if="modelCard.taskLength()">
       <ProgressBar
@@ -59,6 +62,7 @@ export default {
     font-size: 12px;
     margin-bottom: 5px;
     display: flex;
+    justify-content: space-between;
   }
 
   &__status {
