@@ -1,0 +1,15 @@
+{
+    "general": {
+        "title": "Titulo",
+        "description": "Descrição",
+        "add-new-task": "Adicionar nova tarefa",
+        "create-new-task": "Cadastre uma task para exibir o progresso",
+        "create-card-error": "O card não pode ficar vazio",
+        "create-task-error": "Primeiro crie a sua task",
+        "create": "Criar",
+        "move-card": "Movar para",
+        "move": "Mover",
+        "send": "Enviar",
+        "cancel": "Cancelar"
+    }
+}

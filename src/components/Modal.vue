@@ -1,29 +1,48 @@
 <template>
   <div v-if="isOpen">
     <div class="modal">
-      <div class="modal__hash">#{{ modelCard.id }}</div>
-
       <button class="modal__close" @click="$emit('onClickCard')">
         <i class="fa-solid fa-close"></i>
       </button>
+
+      <div class="modal__delete">
+        <button
+          class="modal__delete--button"
+          v-show="!modalConfirmDelete"
+          @click="confirmModal"
+        >
+          <i class="fa-solid fa-trash-can"></i>
+        </button>
+        <div class="modal__delete__confirm" v-show="modalConfirmDelete">
+          <button class="modal__delete__confirm--delete" @click="deleteCard">
+            exluir card
+          </button>
+          <button class="modal__delete__confirm--cancel" @click="confirmModal">
+            cancelar
+          </button>
+        </div>
+      </div>
+
+      <label>{{ this.langs.general.title }}</label>
       <input
         class="input"
         @change="updateTitle"
         type="text"
-        placeholder="Titulo"
+        :placeholder="this.langs.general.title"
         :value="modelCard.title"
       />
 
       <div class="modal__description">
+        <label>{{ this.langs.general.description }}</label>
         <textarea
           :value="modelCard.description"
           @change="createDescription"
-          placeholder="Descrição"
+          :placeholder="this.langs.general.title"
         ></textarea>
       </div>
 
       <div class="modal__list" v-if="lists.length > 1 && isMobile">
-        <p>Mover para</p>
+        <p>{{ this.langs.general["move-card"] }}</p>
         <select v-model="selected">
           <option
             v-for="list in lists"
@@ -37,22 +56,24 @@
         </select>
 
         <div v-if="selected !== ''">
-          <button @click="changeCard(card, selected)">atualizar</button>
+          <button @click="changeCard(card, selected)">
+            {{ this.langs.general.move }}
+          </button>
         </div>
       </div>
 
       <div class="modal__tasks">
-        <p>criar task</p>
+        <label>{{ this.langs.general["add-new-task"] }}</label>
         <input
           class="input"
           type="text"
-          placeholder="Digite aqui sua task..."
+          :placeholder="this.langs.general['add-new-task']"
           v-model="task"
         />
-        <span class="modal__tasks--error" v-if="taskError"
-          >primeiro crie a sua task</span
-        >
-        <button @click="createTask">criar</button>
+        <span class="modal__tasks--error" v-if="taskError">{{
+          this.langs.general["create-task-error"]
+        }}</span>
+        <button @click="createTask">{{ this.langs.general.create }}</button>
         <div class="modal__tasks-list" v-show="this.modelCard.taskLength()">
           <ProgressBar
             :total="this.modelCard.taskLength()"
@@ -68,7 +89,7 @@
 
 <script>
 import store from "@/store";
-import { mapActions, mapState } from "vuex";
+import { mapActions, mapGetters, mapState } from "vuex";
 import ModelCard from "@/models/card";
 import ModelTask from "@/models/task";
 import ProgressBar from "./ProgressBar.vue";
@@ -88,6 +109,7 @@ export default {
       task: "",
       checkedList: [],
       taskError: false,
+      modalConfirmDelete: false,
     };
   },
 
@@ -105,7 +127,9 @@ export default {
   emits: ["onClickCard"],
 
   computed: {
-    ...mapState(["lists", "cards"]),
+    ...mapState(["lists", "cards", "langs"]),
+    ...mapGetters(["langs"]),
+
     modelCard() {
       return new ModelCard(
         this.getCard?.listID,
@@ -115,6 +139,7 @@ export default {
         this.getCard?.description
       );
     },
+
     getCard() {
       return this.cards?.filter((card) => card.id === this.card?.id)[0];
     },
@@ -131,6 +156,11 @@ export default {
       store.dispatch("CHANGE_CARD", data);
       this.$emit("onClickCard");
       this.selected = "";
+    },
+
+    confirmModal() {
+      console.log("clicou");
+      this.modalConfirmDelete = !this.modalConfirmDelete;
     },
 
     fnTaskError() {
@@ -167,6 +197,11 @@ export default {
     updateStatusTask(status, taskId) {
       this.modelCard.updateTask(status, taskId);
       store.dispatch("ADDITIONAL_INFOS_CARD", this.modelCard);
+    },
+
+    deleteCard() {
+      store.dispatch("DELETE_CARD", this.modelCard);
+      this.$emit("onClickCard");
     },
 
     shouldShowSelect(id) {
@@ -240,6 +275,63 @@ export default {
     }
   }
 
+  &__delete {
+    position: absolute;
+    right: 50px;
+    top: 15px;
+
+    &__confirm {
+      button {
+        padding: 8px 16px;
+        border-radius: 4px;
+        border: 1px solid transparent;
+        cursor: pointer;
+        opacity: 0.9;
+        transition: ease-in-out 0.3s;
+        color: $color-primary;
+        &:hover,
+        &:focus {
+          opacity: 1;
+        }
+      }
+
+      &--cancel {
+        background: $color-secondary;
+        margin-left: 5px;
+      }
+
+      &--delete {
+        background: $color-error;
+      }
+    }
+
+    &--button {
+      border: none;
+      background: none;
+      padding: 10px;
+      width: 25px;
+      height: 25px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      cursor: pointer;
+      background: $bg-light;
+      transition: $transition;
+      border: 1px solid transparent;
+      color: $color-primary;
+      &:hover,
+      &:focus {
+        border: 1px solid $color-error;
+        color: $color-error;
+      }
+    }
+
+    &--confirm {
+      display: flex;
+    }
+  }
+
   &__close {
     position: absolute;
     right: 15px;
@@ -277,6 +369,20 @@ export default {
     position: absolute;
     top: 0;
     opacity: 0.5;
+  }
+
+  &__list {
+    margin-bottom: 15px;
+    button {
+      padding: 8px 16px;
+      border-radius: 4px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      opacity: 0.9;
+      transition: ease-in-out 0.3s;
+      background: $color-secondary;
+      color: $color-primary;
+    }
   }
 
   &__tasks {

@@ -4,7 +4,6 @@
       <div>
         {{ modelCard.title }}
       </div>
-      <div>#{{ modelCard.id }}</div>
     </span>
     <div class="card__status" v-if="modelCard.taskLength()">
       <ProgressBar
@@ -12,20 +11,24 @@
         :done="modelCard.tasksDone()"
       />
     </div>
-    <small style="font-size: 10px" class="card__status" v-else
-      >cadastre uma task para exibir o progresso</small
-    >
+    <small style="font-size: 10px" class="card__status" v-else>{{
+      this.langs.general["create-new-task"]
+    }}</small>
   </div>
 </template>
 
 <script>
 import ModelCard from "@/models/card";
 import ProgressBar from "./ProgressBar.vue";
+import { mapGetters } from "vuex";
+
 export default {
   name: "CardComponent",
   props: ["card"],
   components: { ProgressBar },
   computed: {
+    ...mapGetters(["langs"]),
+
     modelCard() {
       return new ModelCard(
         this.card.listID,
