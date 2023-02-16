@@ -24,7 +24,7 @@
       <button-new
         :show="!newCard"
         @onClickButton="handleClick"
-        text="Adicionar nova tarefa"
+        :text="this.langs.general['add-new-task']"
       />
       <CreateForm
         placeholder="novo cartão"
@@ -44,7 +44,7 @@
 </template>
 
 <script>
-import { mapState, mapActions } from "vuex";
+import { mapState, mapActions, mapGetters } from "vuex";
 import Card from "@/components/Card.vue";
 import store from "@/store";
 import ButtonNew from "./ButtonNew.vue";
@@ -83,7 +83,7 @@ export default {
 
     createCard() {
       if (this.isEmpty) {
-        return (this.error = "O card não pode ficar vazio");
+        return (this.error = this.langs.general["create-card-error"]);
       }
 
       const card = new ModelCard(this.listID, this.newCardValue);
@@ -119,6 +119,7 @@ export default {
   },
   computed: {
     ...mapState(["cards"]),
+    ...mapGetters(["langs"]),
 
     cardList() {
       return this.cards?.filter((card) => card.listID === this.listID);

@@ -1,4 +1,5 @@
 import { createStore } from "vuex";
+import lang from "../lang/texts.json";
 
 function updateCardStorage(data) {
   localStorage.setItem("card", JSON.stringify(data));
@@ -27,6 +28,7 @@ export default createStore({
       },
     ],
     cards: getCardStorage() ?? [],
+    lang: lang,
   },
   mutations: {
     ["UPDATE_LIST"](state, payload) {
@@ -42,12 +44,20 @@ export default createStore({
       state.cards[state.cards.indexOf(item)] = item;
       updateCardStorage(state.cards);
     },
+    ["DELETE_CARD"](state, { id }) {
+      const updatedCardsAfterDelete = state.cards.filter(
+        (card) => card.id !== id
+      );
+      state.cards = updatedCardsAfterDelete;
+      updateCardStorage(state.cards);
+    },
     ["ADDITIONAL_INFOS_CARD"](state, card) {
       const index = state.cards.findIndex((item) => item.id == card.id);
       state.cards[index] = card;
       updateCardStorage(state.cards);
     },
   },
+
   actions: {
     ["CREATE_LIST"]({ commit }, payload) {
       commit("UPDATE_LIST", payload);
@@ -58,8 +68,17 @@ export default createStore({
     ["CHANGE_CARD"]({ commit }, payload) {
       commit("CHANGE_CARD", payload);
     },
+    ["DELETE_CARD"]({ commit }, payload) {
+      commit("DELETE_CARD", payload);
+    },
     ["ADDITIONAL_INFOS_CARD"]({ commit }, payload) {
       commit("ADDITIONAL_INFOS_CARD", payload);
+    },
+  },
+
+  getters: {
+    langs(state) {
+      return state.lang;
     },
   },
 });

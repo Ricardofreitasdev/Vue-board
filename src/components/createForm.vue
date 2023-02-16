@@ -8,8 +8,10 @@
       @change="onInput"
     />
     <div class="createForm__wrapper--box">
-      <button class="send" @click="click">enviar</button>
-      <button class="cancel" @click="$emit('onClickCancel')">cancelar</button>
+      <button class="send" @click="click">{{ this.langs.general.send }}</button>
+      <button class="cancel" @click="$emit('onClickCancel')">
+        {{ this.langs.general.cancel }}
+      </button>
     </div>
     <div v-if="hasError" class="createForm__error">
       <span>{{ error }}</span>
@@ -18,6 +20,8 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+
 export default {
   name: "createForm",
   props: {
@@ -32,6 +36,9 @@ export default {
     };
   },
   emits: ["onClickCreate", "onClickCancel", "onValueInput"],
+  computed: {
+    ...mapGetters(["langs"]),
+  },
   methods: {
     onInput(event) {
       this.$emit("onValueInput", event.target.value);
