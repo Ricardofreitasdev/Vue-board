@@ -6,6 +6,7 @@
       :placeholder="placeholder"
       v-model="text"
       @change="onInput"
+      @keyup.enter="click"
     />
     <div class="createForm__wrapper--box">
       <button class="send" @click="click">{{ this.langs.general.send }}</button>
@@ -42,7 +43,6 @@ export default {
   methods: {
     onInput(event) {
       this.$emit("onValueInput", event.target.value);
-      this.text = "";
     },
     click() {
       this.$emit("onClickCreate");
