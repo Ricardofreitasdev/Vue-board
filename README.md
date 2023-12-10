@@ -4,7 +4,7 @@ VueBoard é uma aplicação web inspirada no Trello que permite organizar tarefa
 
 ![vue-board](doc/vue-board.png)
 
-Confira em produção: https://vue-board.vercel.app
+Veja em produção: https://vue-board.vercel.app
 
 ## Recursos Principais
 
