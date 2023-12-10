@@ -69,6 +69,7 @@
           type="text"
           :placeholder="this.langs.general['add-new-task']"
           v-model="task"
+          @keyup.enter="createTask"
         />
         <span class="modal__tasks--error" v-if="taskError">{{
           this.langs.general["create-task-error"]
@@ -159,7 +160,6 @@ export default {
     },
 
     confirmModal() {
-      console.log("clicou");
       this.modalConfirmDelete = !this.modalConfirmDelete;
     },
 
